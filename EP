@@ -1,0 +1,305 @@
+from os import system, name
+import random 
+def limpaTela(): 
+	if name == 'nt': 
+		system('cls') 
+	else: 
+		system('clear') 
+def leValor(funcaoConv, msg = ""):
+    """Função responsável por ler os valores e assegurar que os valores inseridos são corretos."""
+    try:
+        return funcaoConv(input(msg))
+    except:
+        print("ERRO: Tipo inválido")
+        return leValor(funcaoConv, msg)
+def imprime_msg_abertura():
+    print("*********************************")
+    print("Bem vindo ao jogo da velha!")
+    print("********************************* \n")
+    _=input("DIGITE ENTER PARA COMEÇAR")
+def sorteioquemcomeca(simbolojogador, simbolocomputador):
+    x =leValor(int,"Preparado para começar? SIM(1) NÃO(2): ")
+    if x == 1:
+        SORTEIO=[simbolojogador, simbolocomputador]
+        SORTEIO=random.choice(SORTEIO)
+        return simbolojogador,simbolocomputador,SORTEIO
+    else:
+        print("Vamos jogar!!! está com medo?")
+        return sorteioquemcomeca(simbolojogador,simbolocomputador)
+def escolha():
+    voce=input("VOCE DESEJA X OU O: ")
+    if voce == "x" or voce == "o":
+        if voce == "x" or voce == "X":
+            simbolojogador = "X"
+            simbolocomputador= "O"
+            return sorteioquemcomeca(simbolojogador, simbolocomputador)
+        elif voce == "o" or voce == "0":
+            simbolojogador = "O"
+            simbolocomputador= "X"
+            return sorteioquemcomeca(simbolojogador, simbolocomputador)
+    else:
+        print("Escolha entre x e o")
+        return escolha()
+   
+
+        
+
+def contajogada(Tab, i =1,soma =0):
+    if i <= 9:
+        if Tab[i] != " ":
+            return contajogada(Tab,i+1,soma +1)
+        else:
+            return contajogada(Tab,i+1,soma)
+    else:
+        return soma
+
+def intercalar(Tab, SORTEIO,simbolocomputador,simbolojogador):
+    if SORTEIO == simbolojogador :
+        if contajogada(Tab) == 0:
+            jogada1=jogada(Tab)
+            Tab[jogada1]=simbolojogador
+            tabuleiro(Tab)
+            return intercalar(Tab, SORTEIO,simbolocomputador,simbolojogador)
+        elif contajogada(Tab) %2 ==0:
+            jogada1=jogada(Tab)
+            Tab[jogada1]=simbolojogador
+            tabuleiro(Tab)
+            verificavenc(Tab,simbolojogador,simbolocomputador,SORTEIO)
+        else:
+            jogadapc = pcjoga(Tab,simbolocomputador)
+            Tab[jogadapc] = simbolocomputador
+            tabuleiro(Tab)
+            verificavenc(Tab,simbolojogador,simbolocomputador,SORTEIO)
+
+    elif SORTEIO == simbolocomputador:
+        if contajogada(Tab) ==0:
+            jogadapc = pcjoga(Tab,simbolocomputador)
+            Tab[jogadapc] = simbolocomputador
+            tabuleiro(Tab)
+            return intercalar(Tab, SORTEIO,simbolocomputador,simbolojogador)
+        elif contajogada(Tab)%2 ==0:
+            jogadapc = pcjoga(Tab,simbolocomputador)
+            Tab[jogadapc] = simbolocomputador
+            tabuleiro(Tab)
+            verificavenc(Tab,simbolojogador,simbolocomputador,SORTEIO)
+        else:
+            jogada1=jogada(Tab)
+            Tab[jogada1]=simbolojogador
+            tabuleiro(Tab)
+            verificavenc(Tab,simbolojogador,simbolocomputador,SORTEIO)
+
+
+def verificavenc(Tab,simbolojogador,simbolocomputador,SORTEIO):
+    if contajogada(Tab) ==9:
+        print("Deu Velha.")
+    else:
+        if Tab[1] == Tab[2] and Tab[2] == Tab[3] and Tab[1] != " ":
+            print("O jogador venceu.")
+        elif Tab[7] == Tab[8] and Tab[8] == Tab[9] and Tab[8] != " " :
+            print("O jogador  venceu.")
+        elif Tab[1] == Tab[4] and Tab[4] == Tab[7] and Tab[1] != " ":
+            print("O jogador  venceu.")
+        elif Tab[2] == Tab[5] and Tab[5] == Tab[8] and Tab[2] !=" ":
+            print("O jogador  venceu.")
+        elif Tab[3] == Tab[6] and Tab[6] == Tab[9] and Tab[3] != " ":
+            print("O jogador  venceu.")
+        elif Tab[1] == Tab[5] and Tab[5] == Tab[9] and Tab[1] != " ":
+            print("O jogador  venceu.")
+        elif Tab[7] == Tab[5] and Tab[5] == Tab[3] and Tab[7] != " ":
+            print("O jogador venceu")
+        elif Tab[4] == Tab[5] and Tab[5] == Tab[6] and Tab[4] != " ":
+            print("O jogador venceu.")
+        else:
+            return intercalar(Tab, SORTEIO,simbolocomputador,simbolojogador)
+
+def pcjoga(Tab,simbolocomputador):
+    if contajogada(Tab) == 0:
+        return 1
+    elif contajogada(Tab) %2 ==0:
+        if Tab[1] == simbolocomputador and Tab[3] == " ":
+            return 3
+        elif Tab[3] == simbolocomputador and Tab[9] == " ":
+            return 9
+        elif Tab[3] != simbolocomputador and Tab[3] != " "  and Tab[1] == simbolocomputador and Tab[7] == " ":
+            return 7
+        elif Tab[1] == simbolocomputador and Tab[9] == simbolocomputador and Tab[3]== simbolocomputador and Tab[5] ==" ":
+            return 5
+        elif Tab[1] == simbolocomputador and Tab[9] == simbolocomputador and Tab[3]== simbolocomputador and Tab[5] !=" " and Tab [5] != simbolocomputador:
+            return 6
+        elif Tab[1] == simbolocomputador and Tab[9] == simbolocomputador and Tab[3]== simbolocomputador and Tab[5] != simbolocomputador and Tab[5] != " " and Tab[7] == " ":
+            return 7
+        elif Tab[1] == simbolocomputador and Tab[7] ==simbolocomputador and Tab[3] != simbolocomputador and Tab[3] != " ":
+            return 6
+        elif Tab[1] == simbolocomputador and Tab [7] == simbolocomputador and Tab[6] == simbolocomputador and Tab[8] == " ":
+            return 8
+        elif Tab[1] == simbolocomputador and Tab[7] == simbolocomputador and Tab[6] == simbolocomputador and Tab [8] != " " and Tab[8] != simbolocomputador and Tab[2] == " ":
+            return 2  
+
+        
+        
+        # if Tab[1] == simbolocomputador and Tab[3] != simbolocomputador and Tab[3] != " ":
+        #     return 5
+        # if Tab[1] == simbolocomputador and Tab[9] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # elif Tab[4] == simbolocomputador and Tab[5] == simbolocomputador and Tab[6] == " ":
+        #     return 6
+        # elif Tab[7] == simbolocomputador and Tab[5] == simbolocomputador and Tab [3] == " ":
+        #     return 3
+        # elif Tab[3] == simbolocomputador and Tab[1] == simbolocomputador and Tab[2] == " ":
+        #     return 2
+        # eli
+        # elif Tab[1] == simbolocomputador and Tab[5] == simbolocomputador and Tab[9] == " ":
+        #     return 9
+        # elif Tab[2] == simbolocomputador and Tab[1] == simbolocomputador and Tab[3] == " ":
+        #     return 3
+        # elif Tab[5] == simbolocomputador and Tab[2] == simbolocomputador and Tab[8] ==" ":
+        #     return 8
+        # elif Tab[9] == simbolocomputador and Tab[5] == simbolocomputador and Tab[1] ==" ":
+        #     return 1
+        # elif Tab[1] == simbolocomputador and Tab[4] == simbolocomputador and Tab[7] == " ":
+        #     return 7
+        # elif Tab[9] == simbolocomputador and Tab[7] == simbolocomputador and Tab[8] == " ":
+        #     return 8
+        # elif Tab[1] == simbolocomputador and Tab[7] == simbolocomputador and Tab[4] == " ":
+        #     return 4
+        # elif Tab[6] == simbolocomputador and Tab[9] == simbolocomputador and Tab[3] == " ":
+        #     return 3
+        # elif Tab[8] == simbolocomputador and Tab[7] == simbolocomputador and Tab[9] == " ":
+        #     return 9
+    else:
+        if Tab[5] == " ":    
+            return 5
+        elif Tab[2] == " ":
+            return 2 
+        elif Tab[1] == " ":
+            return 1
+        elif Tab[7] == " ":
+            return 7  
+        elif Tab[8]== " ":
+            return 8
+        elif Tab[2] == " ":
+            return 2   
+        elif Tab[9] == " ":
+            return 9 
+        elif Tab[3] == " ":
+            return 3
+        elif Tab[3] == " ":
+            return 3
+        elif Tab[6] == " ":
+            return 6
+        elif Tab[4] == " ":
+            return 4
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == " ":
+        #     return 3
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[5] == simbolocomputador and Tab[2] != " " and Tab[2] != simbolocomputador:
+        #     return 7
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+        # if Tab[1] != simbolocomputador and Tab[1] != " " and Tab[3] == simbolocomputador and Tab[5] == " ":
+        #     return 5
+    
+
+        
+
+            
+# def pcjoga(Tab,simbolocomputador):
+#     if Tab[1] == " ":
+#         return 1
+#     if Tab[1] != " " and Tab[1] != simbolocomputador:
+#         return 3
+#     if Tab[1] != simbolocomputador and Tab [1] != " " and Tab[3] == simbolocomputador : 
+#         return 8
+#     if Tab [1] == simbolocomputador and Tab[3] == simbolocomputador:
+#         return 9
+#     if Tab[4] == simbolocomputador and Tab[5] == simbolocomputador and Tab[6] == " ":
+#         return 6
+#     if Tab[7] == simbolocomputador and Tab[5] == simbolocomputador and Tab [3] == " ":
+#         return 3
+#     if Tab[3] == simbolocomputador and Tab[1] == simbolocomputador and Tab[2] == " ":
+#         return 2
+#     if Tab[1] == simbolocomputador and Tab[5] == simbolocomputador and Tab[9] == " ":
+#         return 9
+#     if Tab[2] == simbolocomputador and Tab[1] == simbolocomputador and Tab[3] == " ":
+#         return 3
+#     if Tab[5] == simbolocomputador and Tab[2] == simbolocomputador and Tab[8] ==" ":
+#         return 8
+#     if Tab[9] == simbolocomputador and Tab[5] == simbolocomputador and Tab[1] ==" ":
+#         return 1
+#     if Tab[1] == simbolocomputador and Tab[4] == simbolocomputador and Tab[7] == " ":
+#         return 7
+#     if Tab[9] == simbolocomputador and Tab[7] == simbolocomputador and Tab[8] == " ":
+#         return 8
+#     if Tab[1] == simbolocomputador and Tab[7] == simbolocomputador and Tab[4] == " ":
+#         return 4
+#     if Tab[6] == simbolocomputador and Tab[9] == simbolocomputador and Tab[3] == " ":
+#         return 3
+#     if Tab[8] == simbolocomputador and Tab[7] == simbolocomputador and Tab[9] == " ":
+#         return 9
+    
+def tabuleiro(Tab):
+    print (f" {Tab[7]} | {Tab[8]} | {Tab[9]} ")
+    print ("---+---+---")
+    print (f" {Tab[4]} | {Tab[5]} | {Tab[6]} ")
+    print ("---+---+---")
+    print (f" {Tab[1]} | {Tab[2]} | {Tab[3]} ")
+
+    print("-"*90)
+
+def jogada(Tab):
+    jogada1 = leValor(int, "escolha uma posição para jogar: ")
+    if jogada1 <1 or jogada1 >9:
+        print("Jogada inválida.")
+        return jogada(Tab)
+    elif Tab[jogada1] == "X" or Tab[jogada1] == "O":
+        print("posição preenchida")
+        limpaTela()
+        tabuleiro(Tab)
+    else:
+        limpaTela()
+        return jogada1
+     
+def main():
+    imprime_msg_abertura()
+    Tab = [" "," "," "," "," "," "," "," "," ", " "]
+    simbolojogador,simbolocomputador,SORTEIO = escolha()
+    intercalar(Tab, SORTEIO,simbolocomputador,simbolojogador)
+
+main()
+
+
+    
+        
+    
+        
